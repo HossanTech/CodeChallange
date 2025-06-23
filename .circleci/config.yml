@@ -1,0 +1,38 @@
+version: 2.1
+
+jobs:
+  build-and-test:
+    macos:
+      xcode: "15.3.0"
+    working_directory: ~/project
+
+    steps:
+      - checkout
+
+      # Build the app
+      - run:
+          name: Build App
+          command: |
+            xcodebuild \
+              -project CodeChallange.xcodeproj \
+              -scheme CodeChallange \
+              -sdk iphonesimulator \
+              -destination 'platform=iOS Simulator,name=iPhone 15,OS=17.4' \
+              clean build CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO
+
+      # Run unit tests
+      - run:
+          name: Run Unit Tests
+          command: |
+            xcodebuild \
+              -project CodeChallange.xcodeproj \
+              -scheme CodeChallange \
+              -sdk iphonesimulator \
+              -destination 'platform=iOS Simulator,name=iPhone 15,OS=17.4' \
+              clean test CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO
+
+workflows:
+  ios:
+    jobs:
+      - build-and-test
+
